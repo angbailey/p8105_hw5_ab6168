@@ -7,6 +7,7 @@ output: github_document
 
 ```{r}
 library(tidyverse)
+set.seed(1)
 ```
 
 
@@ -62,6 +63,43 @@ Based on this plot, we can see that the probability of at least two people in th
 
 
 ## Problem 2
+
+Setting design elements
+```{r}
+n_sample = 30        
+sigma = 5       
+mu = 0         
+n_sims = 5000
+alpha_level = 0.05 
+
+sim_mean_sd = function(n = n_sample, mu, sigma) {
+  
+  sim_data = rnorm(n, mean = mu, sd = sigma)
+  result = t.test(sim_data, mu = 0)
+  
+  # Return the tidy data frame
+  return(broom::tidy(result))
+}
+
+#Iterating for 5000 datasets
+sim_results = map_dfr(1:5000, ~sim_mean_sd(
+  n = n_sample,
+  mu,
+  sigma)
+) |> 
+  select(estimate, p.value)
+
+
+```
+
+
+
+
+
+
+
+
+
 
 
 
