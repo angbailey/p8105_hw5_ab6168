@@ -68,27 +68,31 @@ Setting design elements
 ```{r}
 n_sample = 30        
 sigma = 5       
-mu = 0         
+mu = c(0,1,2,3,4,5,6)     
 n_sims = 5000
 alpha_level = 0.05 
 
-sim_mean_sd = function(n = n_sample, mu, sigma) {
+
+sim_mean_sd = function(n, mu, sigma) {
   
-  sim_data = rnorm(n, mean = mu, sd = sigma)
+  sim_data = rnorm(n = n, mean = mu, sd = sigma)
   result = t.test(sim_data, mu = 0)
   
-  # Return the tidy data frame
   return(broom::tidy(result))
 }
 
-#Iterating for 5000 datasets
-sim_results = map_dfr(1:5000, ~sim_mean_sd(
-  n = n_sample,
-  mu,
-  sigma)
-) |> 
-  select(estimate, p.value)
-
+#iterating for 5000 datasets for each mu
+sim_results = map_dfr(mu, function(mu_value) {
+  sims_mu_value = map_dfr(1:n_sims, 
+                          ~sim_mean_sd(
+                            n = n_sample,
+                            mu = mu_value,
+                            sigma = sigma
+  )) |> 
+    mutate(mean = mu_value)
+  
+}) |> 
+  select(mean, estimate, p.value)
 
 ```
 
