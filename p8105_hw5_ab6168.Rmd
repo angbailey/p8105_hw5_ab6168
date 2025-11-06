@@ -14,8 +14,8 @@ library(tidyverse)
 
 Writing function:
 ```{r}
-# n : number of people in the group
-# return TRUE if at least two people share a birthday, FALSE otherwise
+#n: number of people in the group
+#return true if at least two people share a birthday, false otherwise
 
 birthday_match = function(n) {
   #randomly drawing n birthdays from 1 to 365
@@ -31,25 +31,17 @@ Creating data frame
 ```{r}
 simulation_results = data.frame(
   group_size = 2:50,
-  probability = numeric(length(group_size)) # initialize column of zeros
+  probability = numeric(length(group_size)) #initialize column of zeros
 )
 ```
 
 Running simulations
 ```{r}
 for (i in 1:nrow(simulation_results)) {
-  
-  # Get the group size 'n' for the current row
-  n = simulation_results$group_size[i]
-  
-  # Replicate the function 10,000 times for this 'n'
-  # This creates a vector of 10,000 TRUE/FALSE values
-  trials = replicate(10000, birthday_match(n))
-  
-  # Calculate the probability by finding the mean
-  # R treats TRUE as 1 and FALSE as 0, so mean()
-  # gives us the proportion of TRUEs (i.e., the probability).
-  simulation_results$probability[i] = mean(trials)
+
+  n = simulation_results$group_size[i] #getting group size n for the current row
+  trials = replicate(10000, birthday_match(n)) 
+  simulation_results$probability[i] = mean(trials) #calculating probability by finding the mean
 }
 ```
 
@@ -60,12 +52,13 @@ ggplot(simulation_results, aes(x = group_size, y = probability)) +
   geom_point(color = "blue") +
   labs(
     title = "The Birthday Problem: Simulation Results",
-    subtitle = paste("Based on", n_sims, "trials per group size"),
+    subtitle = paste("Based on 10,000 trials per group size"),
     x = "Number of People in Group",
     y = "Probability of at Least One Shared Birthday"
   )
 ```
 
+Based on this plot, we can see that the probability of at least two people in the group sharing a birthday steadily increases as the number of people in the group increases and almost 100% chance when there are 50 people in a group.
 
 
 ## Problem 2
