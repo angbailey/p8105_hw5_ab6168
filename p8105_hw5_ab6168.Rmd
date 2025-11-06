@@ -72,8 +72,8 @@ mu = c(0,1,2,3,4,5,6)
 n_sims = 5000
 alpha_level = 0.05 
 
-
-sim_mean_sd = function(n, mu, sigma) {
+#function to save test output for each dataset
+sim_mean_p = function(n, mu, sigma) {
   
   sim_data = rnorm(n = n, mean = mu, sd = sigma)
   result = t.test(sim_data, mu = 0)
@@ -84,21 +84,40 @@ sim_mean_sd = function(n, mu, sigma) {
 #iterating for 5000 datasets for each mu
 sim_results = map_dfr(mu, function(mu_value) {
   sims_mu_value = map_dfr(1:n_sims, 
-                          ~sim_mean_sd(
+                          ~sim_mean_p(
                             n = n_sample,
                             mu = mu_value,
                             sigma = sigma
   )) |> 
-    mutate(mean = mu_value)
+    mutate(mu = mu_value)
   
 }) |> 
-  select(mean, estimate, p.value)
+  select(mu, estimate, p.value)
 
 ```
 
 
+Make a plot showing the proportion of times the null was rejected (the power of the test) on the y axis and the true value of 𝜇on the x axis.
 
+```{r}
+#calculating power for each mu
+power_results = sim_results |> 
+  group_by(mu) |> 
+  summarize(
+    power = mean(p.value < alpha_level),
+    .groups = "drop"
+  )
 
+power_plot = ggplot(power_results, aes(x = mu, y = power)) +
+  geom_line(linewidth = 1, color = "darkgreen") +
+  geom_point(size = 3, color = "darkgreen") +
+  labs(
+    title = "Power of One-Sample T-Test vs. True Mu",
+    x = "True Population Mean (μ)",
+    y = "Power"
+  )
+
+```
 
 
 
