@@ -121,6 +121,60 @@ ggplot(power_results, aes(x = mu, y = power)) +
 The plot shows a strong, positive association between effect size and power. As $\mu$ increases, the power  increases rapidly.The power increases slowly at first (from $\mu=0$ to $\mu=1$), then very steeply (from $\mu=1$ to $\mu=4$), and finally approaches 100% as the effect size becomes very large.
 
 
+Make plot showing the average estimate of mu on the y axis and the true value of mu on the x axis. 
+
+```{r}
+#calculating both average estimates
+avg_estimates = sim_results |> 
+  group_by(mu) |> 
+  summarize(
+    avg_mu_hat = mean(estimate), #all sims
+    avg_mu_hat_rejected = mean(estimate[p.value < alpha_level]), #rejected sims
+    .groups = "drop"
+  )
+
+#tidying data for plotting
+plot_data = avg_estimates |> 
+  pivot_longer(
+    cols = c(avg_mu_hat, avg_mu_hat_rejected),
+    names_to = "estimate_type",
+    values_to = "avg_mu_hat"
+  )
+
+#creating plot
+ggplot(plot_data,
+       aes(x = mu, y = avg_mu_hat, color = estimate_type)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  
+  scale_color_brewer(palette = "Set2", 
+                     labels = c("All Samples", "Rejected Samples")) +
+  labs(
+    title = "Average Estimate (μ̂) vs. True Mean (μ)",
+    x = "True Population Mean (μ)",
+    y = "Average Sample Estimate (μ̂)",
+    color = "Estimate Group"
+  )
+```
+
+
+Make a second plot (or overlay on the first) showing the average estimate of mu only in samples for which the null was rejected on the y-axis and the true value of mu on the x-axis. Is the sample average of mu across tests for which the null is rejected approximately equal to the true value of mu. Why or why not?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
