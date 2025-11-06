@@ -157,9 +157,7 @@ ggplot(plot_data,
   )
 ```
 
-
-Make a second plot (or overlay on the first) showing the average estimate of mu only in samples for which the null was rejected on the y-axis and the true value of mu on the x-axis. Is the sample average of mu across tests for which the null is rejected approximately equal to the true value of mu. Why or why not?
-
+The sample average of mu across tests for which the null is rejected is not equal to the true value of mu. From the plot, we can see that the average estimate of mu in samples for which the null was rejected is higher than the true mu when the true mu is small. This happens because when we are only looking at the estimates from rejected tests, we are looking at the significant results that may overestimate the true effect, especially when the power is low.
 
 
 
