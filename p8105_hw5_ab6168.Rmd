@@ -7,6 +7,7 @@ output: github_document
 
 ```{r}
 library(tidyverse)
+library(broom)
 set.seed(1)
 ```
 
@@ -180,17 +181,34 @@ homicide_data = homicide_data |>
 unsolved = c("Closed without arrest","Open/No arrest")
 
 #homicide counts
-homicide_data |> 
+city_summary = homicide_data |> 
   group_by(city_state) |> 
   summarize(
     homicide_count = n(),
     unsolved_homicide = sum(disposition %in% unsolved)
   )
-  
+
 ```
 
 
+Baltimore proportion test
+```{r}
+baltimore_data = city_summary |> 
+  filter(city_state == "Baltimore, MD")
 
+unsolved_count = baltimore_data |> pull(unsolved_homicide)
+total_count = baltimore_data |> pull(homicide_count)
+
+#running test
+prop_test = prop.test(x = unsolved_count, n = total_count)
+
+#tidying results
+results = prop_test |> 
+  tidy() |> 
+  select(estimate, conf.low, conf.high)
+
+
+```
 
 
 
