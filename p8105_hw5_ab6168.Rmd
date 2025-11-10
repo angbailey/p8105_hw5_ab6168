@@ -236,6 +236,29 @@ city_proportions = city_summary |>
 
 
 
+Creating plot
+```{r, fig.height = 7}
+city_proportions |> 
+  mutate(city_state = reorder(city_state, estimate)) |> 
+  ggplot(aes(x = city_state, y = estimate)) +
+  geom_errorbar(
+    aes(ymin = conf.low, ymax = conf.high),
+    width = 0.2) +
+  geom_point(color = "red") +
+  coord_flip() +
+  labs(
+    title = "Estimated Proportion of Unsolved Homicides by City",
+    x = "City",
+    y = "Estimated proportion of unsolved homicides"
+  )
+    labs(
+    title = "Estimated Proportion of Unsolved Homicides by City (95% CI)",
+    subtitle = "Cities are ordered by the estimated proportion (lowest to highest)",
+    x = "City",
+    y = "Estimated Proportion of Unsolved Homicides"
+  )
+  
+```
 
 
 
