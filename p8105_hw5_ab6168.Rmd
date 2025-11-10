@@ -184,8 +184,8 @@ unsolved = c("Closed without arrest","Open/No arrest")
 city_summary = homicide_data |> 
   group_by(city_state) |> 
   summarize(
-    homicide_count = n(),
-    unsolved_homicide = sum(disposition %in% unsolved)
+    total_homicides = n(),
+    unsolved_homicides = sum(disposition %in% unsolved)
   )
 
 ```
@@ -196,8 +196,8 @@ Baltimore proportion test
 baltimore_data = city_summary |> 
   filter(city_state == "Baltimore, MD")
 
-unsolved_count = baltimore_data |> pull(unsolved_homicide)
-total_count = baltimore_data |> pull(homicide_count)
+unsolved_count = baltimore_data |> pull(unsolved_homicides)
+total_count = baltimore_data |> pull(total_homicides)
 
 #running test
 prop_test = prop.test(x = unsolved_count, n = total_count)
@@ -210,6 +210,29 @@ results = prop_test |>
 
 ```
 
+
+All cities
+```{r}
+city_proportions = city_summary |> 
+  mutate(
+    prop_test_output = map2(
+      .x = unsolved_homicides, 
+      .y = total_homicides, 
+      .f = ~ prop.test(x = .x, n = .y)
+    )
+  ) |> 
+  mutate(
+    output = map(prop_test_output, tidy)
+  ) |> 
+  unnest(output) |> 
+  select(
+    city_state,
+    estimate,
+    conf.low,
+    conf.high
+  )
+
+```
 
 
 
