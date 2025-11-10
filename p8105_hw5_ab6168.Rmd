@@ -169,20 +169,26 @@ homicide_data = read.csv("data/homicide-data.csv")
 
 
 **Description of raw data:**
-There are `r nrow(homicide_data)`observations with 12 variables. The data includes the location of the killing, whether an arrest was made, and basic demographic information about each victim. 
+There are `r nrow(homicide_data)`observations with each row representing a homicide victim. The data includes the city and state where the homicide occurred, whether an arrest was made, and basic demographic information about each victim. 
 
-Creating new variable
+
 ```{r}
+#creating new variable
 homicide_data = homicide_data |> 
-  unite(col = "city_state", city, state, sep = ", ")
-```
+  mutate(city_state = str_c(city, ", ", state))
 
-Summarize within cities to obtain the total number of homicides and the number of unsolved homicides (those for which the disposition is “Closed without arrest” or “Open/No arrest”).
-```{r}
+unsolved = c("Closed without arrest","Open/No arrest")
+
+#homicide counts
 homicide_data |> 
   group_by(city_state) |> 
-  summarize(homicide_count = n())
+  summarize(
+    homicide_count = n(),
+    unsolved_homicide = sum(disposition %in% unsolved)
+  )
+  
 ```
+
 
 
 
