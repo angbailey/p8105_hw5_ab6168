@@ -5,7 +5,7 @@ date: "2025-11-05"
 output: github_document
 ---
 
-```{r}
+```{r, message=FALSE}
 library(tidyverse)
 library(broom)
 set.seed(1)
@@ -98,8 +98,8 @@ sim_results = map_dfr(mu, function(mu_value) {
 ```
 
 
-Make a plot showing the proportion of times the null was rejected (the power of the test) on the y axis and the true value of 𝜇on the x axis.
 
+Making plot for Power of Test vs. True value of Mean
 ```{r}
 #calculating power for each mu
 power_results = sim_results |> 
@@ -119,10 +119,12 @@ ggplot(power_results, aes(x = mu, y = power)) +
   )
 
 ```
-The plot shows a strong, positive association between effect size and power. As $\mu$ increases, the power  increases rapidly.The power increases slowly at first (from $\mu=0$ to $\mu=1$), then very steeply (from $\mu=1$ to $\mu=4$), and finally approaches 100% as the effect size becomes very large.
+
+The plot shows a strong, positive association between effect size and power. As $\mu$ increases, the power  increases rapidly. The power increases slowly at first (from $\mu=0$ to $\mu=1$), then very steeply (from $\mu=1$ to $\mu=4$), and finally approaches 100% as the effect size becomes very large.
 
 
-Make plot showing the average estimate of mu on the y axis and the true value of mu on the x axis. 
+
+Making plot for average estimate of mean vs. true value of mean
 
 ```{r}
 #calculating both average estimates
@@ -164,6 +166,7 @@ The sample average of mu across tests for which the null is rejected is not equa
 
 ## Problem 3
 
+Reading in data
 ```{r}
 homicide_data = read.csv("data/homicide-data.csv")
 ```
@@ -211,7 +214,7 @@ results = prop_test |>
 ```
 
 
-All cities
+Running test for all cities
 ```{r}
 city_proportions = city_summary |> 
   mutate(
@@ -231,6 +234,8 @@ city_proportions = city_summary |>
     conf.low,
     conf.high
   )
+
+city_proportions
 
 ```
 
@@ -259,9 +264,6 @@ city_proportions |>
   )
   
 ```
-
-
-
 
 
 
